@@ -1,0 +1,5 @@
+select * from news;
+
+delete from news;
+
+delete from newsbody;

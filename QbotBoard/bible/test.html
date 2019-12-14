@@ -1,0 +1,1524 @@
+<!-- coded by_200701_정일영 -->
+
+
+<!-- ******************************************************** SSL 보안서버적용 ***************************************************** //-->
+
+
+
+
+<!---------------------------------- 로그인/아웃 버튼 클릭 또는 자동으로 로그인 페이지 넘기기 시작 ------------------------->
+	<script language="javascript">
+	<!--
+	  function jsGoto_Login_Page()
+	  {
+			frm = document.G_form_index;
+			window.open("","_LOGIN","width=255,height=200");
+			frm.target = "_LOGIN";
+			frm.action = "http://bible.c3tv.com/bible/inc/login.asp";
+			frm.from_CLICK.value = "";
+			frm.submit();
+		}
+
+	  function jsGoto_Login_Page_Bible()
+	  {
+			frm = document.G_form_index;
+
+			BibleKindParam = '&KindBCdArr='+SearchForm.KindBCdArr.value+'&CtgACd='+rdo_CtgACd+'&CtgBCd='+SearchForm.CtgBCd.value+'&Jang='+SearchForm.Jang.value+'&MenuCd=2';
+
+			window.open("","_LOGIN","width=255,height=200");
+			frm.target = "_LOGIN";
+			frm.action = "http://bible.c3tv.com/bible/inc/login.asp";
+			frm.from_CLICK.value = "BIBLE";
+			frm.bible_kind_param.value = BibleKindParam;
+			frm.submit();
+
+		}
+
+	  function jsGoto_Login_Page_Bible_Ifr(page_from)
+	  {
+			LoginBox_View();
+			frm = document.G_form_index;
+
+			if (page_from == 'read_page')
+			{
+				BibleKindParam = '&KindBCdArr='+SearchForm.KindBCdArr.value+'&CtgACd='+rdo_CtgACd+'&CtgBCd='+SearchForm.CtgBCd.value+'&Jang='+SearchForm.Jang.value+'&MenuCd=2';
+			}
+			else 
+			{
+				BibleKindParam = '';
+			}
+
+			frm.target = "login_box_ifr";
+			frm.action = "http://bible.c3tv.com/bible/inc/login.asp";
+			frm.from_CLICK.value = "BIBLE_IFR";
+			frm.bible_kind_param.value = BibleKindParam;
+			frm.submit();
+
+		}
+
+
+
+	  function jsGoto_Logoff_Page(home_id)
+	  {
+			frm = document.G_form_index;
+		    frm.action = "http://bible.c3tv.com/bible/inc/logoff_exc.asp";
+			frm.submit();
+	  }
+
+
+	  function jsGoto_Login_Page_Url(input_goto_URL)
+	  {
+			frm = document.G_form_index;
+
+			frm.goto_URL.value = input_goto_URL;
+			frm.goto_PARAMETER.value = "";
+			frm.from_CLICK.value = "FRAME";
+
+			frm.target = "_parent";
+
+			frm.action = "http://help.c3tv.com/member/info/member_info_login.asp";
+			frm.submit();
+		}
+
+
+	  function jsGoto_Login_Exc(frm2)
+	  {
+			frm = document.G_form_index;
+
+			if (frm2.member_id.value == false)
+			{
+			  alert("아이디를 입력하세요.");
+			  frm2.member_id.focus();
+
+			  return;
+			}
+
+			if (frm2.passwd.value == false)
+			{
+			  alert("비밀번호를 입력하세요.");
+			  frm2.passwd.focus();
+
+			  return;
+			}
+
+			  frm.member_id.value = frm2.member_id.value
+			  frm.passwd.value = frm2.passwd.value
+
+			  frm.action = "http://help.c3tv.com/member/info/login_Exc.asp";
+			  frm.submit();
+		}
+	//-->
+	</script>
+
+	<form name="G_form_index" method="post">
+		<input type="hidden" name="goto_HOST" value="http://bible.c3tv.com">
+		<input type="hidden" name="goto_URL" value="http://bible.c3tv.com/bible/read/read.asp">
+		<input type="hidden" name="goto_PARAMETER" value="&MenuCd=2">
+		<input type="hidden" name="from_CLICK" value="">
+		<input type="hidden" name="bible_kind_param">
+		<input type="hidden" name="member_id">
+		<input type="hidden" name="passwd">
+	</form>
+
+
+
+
+
+<!---------------------------------- 로그인/아웃 버튼 클릭 또는 자동으로 로그인 페이지 넘기기 끝 ------------------------->
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function ready()
+{
+  alert("서비스 음원 업데이트 중입니다.");
+}
+
+
+// 쥬크박스의 부모윈도우명 명시
+window.name="C3TV_ONLINE_JUKEBOX_OPENER";
+
+
+//XMLHTTP 객체 생성
+function getXMLHttpRequest()
+	{
+		if (window.ActiveXObject)
+		{
+			try {
+				return new ActiveXObject("Msxml2.XMLHTTP");
+			} catch(e) {
+				try {
+					return new ActiveXObject("Microsoft.XMLHTTP");
+				} catch(e1) { return null; }
+			}
+		} else if (window.XMLHttpRequest) {
+			return new XMLHttpRequest();
+		} else {
+			return null;
+		}
+	}
+
+
+	//장선택박스 로드
+	function JangSBoxLoad(CtgBCd)
+	{
+//alert(CtgBCd);
+
+		var Url //경로+파일명
+		var Params //파라메터
+
+		Url="Jang_div.asp"
+		Params='CtgBCd='+CtgBCd
+
+
+		httpRequest = getXMLHttpRequest();
+		//httpRequest.onreadystatechange = viewMessage; //동기방식일 경우 사용
+		httpRequest.open("post", Url,false);
+		httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		//httpRequest.send(null); GET일 경우
+		httpRequest.send(Params)
+
+		if (httpRequest.readyState == 4) {
+			if (httpRequest.status == 200) {
+				JangDiv.innerHTML=httpRequest.responseText;
+			} else {
+				alert("실패: "+httpRequest.status);
+			}
+		}
+
+	}
+
+	//CtgBCd선택박스 로드
+	function CtgBCdSBoxLoad(CtgACd)
+	{
+
+		var Url //경로+파일명
+		var Params //파라메터
+
+		Url="CtgBCd_div.asp"
+		Params='CtgACd='+CtgACd
+
+
+		httpRequest = getXMLHttpRequest();
+		//httpRequest.onreadystatechange = viewMessage; //동기방식일 경우 사용
+		httpRequest.open("post", Url,false);
+		httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		//httpRequest.send(null); GET일 경우
+		httpRequest.send(Params)
+
+		if (httpRequest.readyState == 4) {
+			if (httpRequest.status == 200) {
+				CtgBCdDiv.innerHTML=httpRequest.responseText;
+			} else {
+				alert("실패: "+httpRequest.status);
+			}
+		}
+
+
+		//2016.07.15 JangSBoxLoad(SearchForm.CtgBCd.value)
+    JangSBoxLoad(document.getElementById("CtgBCd").value);
+	}
+
+
+
+//버전선택
+function KindBCdChecked(Index)
+{
+	var i
+	var CheckValue
+	CheckValue=0
+
+	//우리말성경 체크 막기  나중에 제거
+	//if(KindBCdChk[5].checked==true)
+	//{
+		//alert("준비중")
+		//KindBCdChk[Index].checked=false;
+		//return false;
+
+	//}
+
+	SearchForm.KindBCdArr.value=""
+
+
+	for( var i=0; i<SearchForm.KindBCdChk.length ; i++)
+	{
+		if(SearchForm.KindBCdChk[i].checked==true)
+		{	CheckValue=CheckValue+1
+			SearchForm.KindBCdArr.value=SearchForm.KindBCdArr.value+';'+SearchForm.KindBCdChk[i].value
+		}
+	}
+
+	if(CheckValue>3)
+	{
+		alert("버전은 3개이상 선택하지 못합니다.")
+		SearchForm.KindBCdChk[Index].checked=false;
+		SearchForm.KindBCdArr.value=""
+		for( var i=0; i<SearchForm.KindBCdChk.length ; i++)
+		{
+			if(SearchForm.KindBCdChk[i].checked==true)
+			{
+				SearchForm.KindBCdArr.value=SearchForm.KindBCdArr.value+';'+SearchForm.KindBCdChk[i].value
+			}
+		}
+
+	}
+}
+
+//내용로드
+function ContLoad()
+{
+
+		var Url //경로+파일명
+		var Params //파라메터
+
+		if(SearchForm.KindBCdArr.value=="")
+		{
+			alert("버전을 선택하시오.")
+			return false;
+		}
+
+		BookmarkListLy.style.display='none'
+
+		Url="read_cont_div.asp"
+
+		//구약/신약 Radio 버튼 선택 여부
+		if (SearchForm.CtgACd[0].checked == true)// 구약이면
+		{
+			rdo_CtgACd = SearchForm.CtgACd[0].value;
+		}
+		else //if(SearchForm.CtgACd[1].checked == true) //신약이면
+		{
+			rdo_CtgACd = SearchForm.CtgACd[1].value;
+		}
+
+
+		//Params='SearchValue='+encodeURIComponent(SearchValue)
+		//Params='SearchValue='+escape(SearchValue)
+
+		//Params='KindBCdArr='+SearchForm.KindBCdArr.value+'&CtgACd='+SearchForm.CtgACd.value+'&CtgBCd='+SearchForm.CtgBCd.value+'&Jang='+SearchForm.Jang.value+'&MenuCd=2';
+
+    // 2013.08.26 주석처리 - ie10문제로 Params='KindBCdArr='+SearchForm.KindBCdArr.value+'&CtgACd='+rdo_CtgACd+'&CtgBCd='+SearchForm.CtgBCd.value+'&Jang='+SearchForm.Jang.value+'&MenuCd=2';
+
+    //2016.07.15 Params='KindBCdArr='+SearchForm.KindBCdArr.value+'&CtgACd='+rdo_CtgACd+'&CtgBCd='+SearchForm.CtgBCd.value+'&Jang='+document.getElementById("Jang").value+'&MenuCd=2';
+Params='KindBCdArr='+SearchForm.KindBCdArr.value+'&CtgACd='+rdo_CtgACd+'&CtgBCd='+document.getElementById("CtgBCd").value+'&Jang='+document.getElementById("Jang").value+'&MenuCd=2';
+        alert(Url)
+
+		httpRequest = getXMLHttpRequest();
+		//httpRequest.onreadystatechange = viewMessage; //동기방식일 경우 사용
+		httpRequest.open("post", Url,false);
+		httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		//httpRequest.send(null); GET일 경우
+		httpRequest.send(Params)
+        alert(Params)
+		if (httpRequest.readyState == 4) {
+			if (httpRequest.status == 200) {
+				Cont.innerHTML=httpRequest.responseText;
+			} else {
+				alert("실패: "+httpRequest.status);
+			}
+		}
+
+}
+
+//페이지
+function PageMove2(Page)
+{
+	//SearchForm.Jang.value=Page;
+
+	ContLoad()
+}
+
+//사전단어 보기
+function DicView(BiDicCd)
+{
+		Sermon.style.display='none'
+		BookmarkListLy.style.display='none'
+		BookmarkLy.style.display='none'
+
+		DicLy.style.top=document.body.scrollTop+event.clientY +10
+		DicLy.style.left=document.body.scrollLeft+event.clientX
+		DicLy.style.display='block'
+		DicIf.location.href='read_dic.asp?BiDicCd='+BiDicCd
+
+}
+
+//## Bookmark 관련 시작 ################################
+// 로그인 상자
+function LoginBox_View()
+{
+		Sermon.style.display='none'
+		BookmarkListLy.style.display='none'
+		BookmarkLy.style.display='none'
+
+		login_box_Ly.style.top=document.body.scrollTop+event.clientY +10
+		login_box_Ly.style.left=document.body.scrollLeft+event.clientX
+		login_box_Ly.style.display='block'
+
+}
+
+
+//Bookmark 저장 화면보기
+function BookmarkWrite()
+{
+		Sermon.style.display='none'
+		BookmarkListLy.style.display='none'
+
+		BookmarkLy.style.top=document.body.scrollTop+event.clientY +10
+		BookmarkLy.style.left=document.body.scrollLeft+event.clientX
+		BookmarkLy.style.display='block'
+
+}
+
+//Bookmark DB에 저장
+function bookmarkWriteOk()
+{
+		frm = document.bookmarkForm;
+		frm.target = "ifr_bookmark";
+		//frm.target = "_aa";
+		frm.submit();
+		BookmarkLy.style.display='none'
+}
+
+//Bookmark 목록 화면보기
+function BookmarkList()
+{
+		Sermon.style.display='none'
+		BookmarkLy.style.display='none'
+
+		BookmarkListLy.style.top=document.body.scrollTop+event.clientY +10
+		BookmarkListLy.style.left=document.body.scrollLeft+event.clientX
+		BookmarkListLy.style.display='block'
+		//BookmarkListIf.location.href='./bookmark_list_div.asp'
+		BookmarkListLoad();
+}
+
+//Bookmark 목록 로드
+function BookmarkListLoad()
+{
+		var Url //경로+파일명
+		var Params //파라메터
+
+		Url="bookmark_list_div.asp";
+
+		//Params='SearchValue='+SearchValue
+		Params='';
+		httpRequest = getXMLHttpRequest();
+		//httpRequest.onreadystatechange = viewMessage; //동기방식일 경우 사용
+		httpRequest.open("post", Url,false);
+		httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		//httpRequest.send(null); GET일 경우
+		httpRequest.send(Params)
+
+		if (httpRequest.readyState == 4) {
+			if (httpRequest.status == 200) {
+				BookmarkListIf.innerHTML=httpRequest.responseText;
+			} else {
+				alert("실패: "+httpRequest.status);
+			}
+		}
+
+}
+
+//Bookmark 삭제
+function Bookmark_deleteOK(intBookmarkCd)
+{
+		var Url //경로+파일명
+		var Params //파라메터
+
+
+	  ans = confirm("삭제하시겠습니까?");
+		if (ans == true)
+		{
+
+			Url="bookmark_list_div.asp";
+
+			//Params='SearchValue='+SearchValue
+			Params='mode=DEL_MODE&BookmarkCd='+intBookmarkCd;
+
+			httpRequest = getXMLHttpRequest();
+			//httpRequest.onreadystatechange = viewMessage; //동기방식일 경우 사용
+			httpRequest.open("post", Url,false);
+			httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			//httpRequest.send(null); GET일 경우
+			httpRequest.send(Params)
+
+			if (httpRequest.readyState == 4) {
+				if (httpRequest.status == 200) {
+					BookmarkListIf.innerHTML=httpRequest.responseText;
+				} else {
+					alert("실패: "+httpRequest.status);
+				}
+			}
+
+		}
+		else
+		{
+			return;
+		}
+
+}
+
+/*
+// Bookmark 삭제
+function Bookmark_deleteOK_old(intBookmarkCd)
+{
+  frm = document.BookmarkListForm;
+  ans = confirm("삭제하시겠습니까?");
+	if (ans == true){
+	  frm.mode.value = "DELETE";
+	  frm.BookmarkCd.value = intBookmarkCd;
+	  frm.target = "ifr_bookmarkList";
+	  frm.action = "./bookmark_list_exc.asp";
+	  frm.submit();
+	}
+	else	{
+		return;
+	}
+}
+*/
+
+
+//관련설교로드
+//인자 :  권구분코드, 장, 절, 소제목코드, 리스트타입 1(장별) 2(소제목별) 3(절별),Page
+function SermonLoad(CtgBCd,Jang,Jul,ThemeCd,ListType,Page)
+{
+
+
+		var Url //경로+파일명
+		var Params //파라메터
+		var x
+
+		Url="read_sermon.asp"
+
+		//Params='SearchValue='+encodeURIComponent(SearchValue)
+		//Params='SearchValue='+escape(SearchValue)
+		Params='Jul='+Jul+'&CtgBCd='+CtgBCd+'&Jang='+Jang+'&ThemeCd='+ThemeCd+'&ListType='+ListType+'&Page='+Page
+
+
+		httpRequest = getXMLHttpRequest();
+		//httpRequest.onreadystatechange = viewMessage; //동기방식일 경우 사용
+		httpRequest.open("post", Url,false);
+		httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		//httpRequest.send(null); GET일 경우
+		httpRequest.send(Params)
+
+		if (httpRequest.readyState == 4) {
+			if (httpRequest.status == 200) {
+				Sermon.innerHTML=httpRequest.responseText;
+			} else {
+				alert("실패: "+httpRequest.status);
+			}
+		}
+
+		DicLy.style.display='none'
+
+    if (document.all["Sermon"].style.display == "none")
+		{
+		  /*Sermon.style.top=document.body.scrollTop+event.clientY +10;
+			x=document.body.scrollLeft+event.clientX;
+			if(x>800)
+			{
+			  x=x-600;
+			}
+			Sermon.style.left=x;*/
+
+      // 높이
+      Sermon.style.top=document.body.scrollTop+70;
+
+		  // 넓이
+      fullscreen_width = parseInt(screen.width / 2 , 10);
+      Sermon.style.left = fullscreen_width - 300;
+		}
+
+		document.all["Sermon"].style.display = "block";
+
+		/*if(Page=="1")
+		{
+			if(Jul=="")
+			{
+				if (document.all["Sermon"].style.display == "block")
+				{
+					//Sermon.style.top=document.body.scrollTop+event.clientY +10
+					Sermon.style.top=document.body.scrollTop+70;
+					x=document.body.scrollLeft+event.clientX
+					if(x>800)
+					{
+						x=x-600
+					}
+					Sermon.style.left=x
+				}
+			}
+		}*/
+}
+
+//설교페이지
+function PageMove(Page)
+{
+	SermonLoad(SermonForm.CtgBCd.value,SermonForm.Jang.value,SermonForm.Jul.value,SermonForm.ThemeCd.value,SermonForm.ListType.value,Page)
+
+}
+
+//설교절이동
+function JulMove(Jul)
+{
+	SermonForm.Jul.value=Jul
+	SermonForm.ListType.value=3
+	SermonLoad(SermonForm.CtgBCd.value,SermonForm.Jang.value,SermonForm.Jul.value,SermonForm.ThemeCd.value,SermonForm.ListType.value,1)
+}
+
+// 설교미디어스킨열기
+function vodOpen(url)
+{
+  //window.open(url,"","width=615,height=409,scrollbars=no");
+
+  window.open(url,"","width=670,height=360,scrollbars=no");
+}
+
+// 리얼스킨열기
+function realOpen(url)
+{
+  window.open(url,"c3tv_real","width=276 ,height=320 Scrollbars=no");
+}
+
+
+//인쇄
+function RPrint()
+{
+	TPrint.location.href='../read/read_cont_print.asp?KindBCdArr='+SearchForm.KindBCdArr.value+'&CtgBCd='+SearchForm.CtgBCd.value+'&Jang='+SearchForm.Jang.value
+}
+
+//오디오듣기 팝업
+/************************************************************************************************************************************************
+function AudioOpen(KType,JangCd,KindBCd)
+{
+	var KLink
+	var OpenC
+	KLink='read_player.asp?JangCd='+JangCd+'&KType='+KType+'&KindBCd='+KindBCd;
+
+	OpenC=window.open(KLink,'OnlineBibleAudio','fullscreen=no,scrollbars=no,width=300,height=119,toolbar=no,location=no, directories=no, status=no, menubar=no, resizable=no')
+
+	OpenC.focus();
+}
+*************************************************************************************************************************************************/
+
+function AudioOpen(KindBCd,CtgBCd,listen_Type,JangCd)
+{
+  filename = "../../skin/skin.asp?KindBCd="+KindBCd+"&CtgBCd="+CtgBCd+"&listen_Type="+listen_Type+"&JangCd="+JangCd
+
+  window.open(filename,"C3TV_ONLINE_JUKEBOX","location=no,directories=no,resizable=no,status=no, toolbar=no,menubar=no,width=390,height=572,scrollbars=no");
+}
+
+//드레그 관련 시작
+
+
+var ie=document.all
+var ns6=document.getElementById&&!document.all
+var dragapproved=false
+var z,x,y
+function move(e){
+  if (dragapproved){
+  z.style.left=ns6? temp1+e.clientX-x: temp1+event.clientX-x
+  z.style.top=ns6? temp2+e.clientY-y : temp2+event.clientY-y
+  return false
+  }
+}
+
+
+var ie=document.all
+var ns6=document.getElementById&&!document.all
+var dragapproved=false
+var z,x,y
+function move(e){
+  if (dragapproved){
+  z.style.left=ns6? temp1+e.clientX-x: temp1+event.clientX-x
+  z.style.top=ns6? temp2+e.clientY-y : temp2+event.clientY-y
+  return false
+  }
+}
+
+function drags(e){
+  if (!ie&&!ns6)
+  return
+  var firedobj=ns6? e.target : event.srcElement
+  var topelement=ns6? "HTML" : "BODY"
+
+  while (firedobj.tagName!=topelement&&firedobj.className!="SermonDrag"&&firedobj.className!="DicLyDrag"&&firedobj.className!="BookmarkLyDrag"&&firedobj.className!="BookmarkListLyDrag"){
+  firedobj=ns6? firedobj.parentNode : firedobj.parentElement
+  }
+
+    if (firedobj.className=="SermonDrag"){
+    dragapproved=true
+    z=firedobj
+    temp1=parseInt(z.style.left+0)
+    temp2=parseInt(z.style.top+0)
+    x=ns6? e.clientX: event.clientX
+    y=ns6? e.clientY: event.clientY
+    document.onmousemove=move
+    return false
+    }
+
+
+    if(firedobj.className=="DicLyDrag"){
+    dragapproved=true
+    z=firedobj
+    temp1=parseInt(z.style.left+0)
+    temp2=parseInt(z.style.top+0)
+    x=ns6? e.clientX: event.clientX
+    y=ns6? e.clientY: event.clientY
+    document.onmousemove=move
+    return false
+    }
+
+    if(firedobj.className=="BookmarkLyDrag"){
+    dragapproved=true
+    z=firedobj
+    temp1=parseInt(z.style.left+0)
+    temp2=parseInt(z.style.top+0)
+    x=ns6? e.clientX: event.clientX
+    y=ns6? e.clientY: event.clientY
+    document.onmousemove=move
+    return false
+    }
+
+    if(firedobj.className=="BookmarkListLyDrag"){
+    dragapproved=true
+    z=firedobj
+    temp1=parseInt(z.style.left+0)
+    temp2=parseInt(z.style.top+0)
+    x=ns6? e.clientX: event.clientX
+    y=ns6? e.clientY: event.clientY
+    document.onmousemove=move
+    return false
+    }
+
+
+  }
+
+document.onmousedown=drags
+document.onmouseup=new Function("dragapproved=false")
+
+
+//드레그 관련 끝
+
+
+/*onload=function()
+{
+
+	if(SearchForm.KindBCdArr.value=="")
+	{
+		KindBCdChk[0].checked=true
+		SearchForm.KindBCdArr.value=';'+KindBCdChk[0].value
+	}
+
+
+	ContLoad();
+
+
+} */
+
+function start_Form()
+{
+
+	if(SearchForm.KindBCdArr.value=="")
+	{
+		SearchForm.KindBCdChk[0].checked=true
+		SearchForm.KindBCdArr.value=';'+SearchForm.KindBCdChk[0].value
+	}
+
+
+	ContLoad();
+
+
+}
+
+//-->
+
+</SCRIPT>
+
+<script language="javascript">
+<!--
+
+function jsgoto_show_sermon_vod(bitrate,chr_code,srmn_code,vod_player_mode)
+{
+  if (vod_player_mode == "MP4_16:9")
+  {
+    window.open("http://pastor.goodtv.co.kr/mp4_16_9.asp?bitrate="+bitrate+"&chr_code="+chr_code+"&srmn_code="+srmn_code,"_SERMON_VOD","location=no,directories=no,resizable=no,status=no, toolbar=no,menubar=no,width=527,height=450,scrollbars=no");
+  }
+  else if (vod_player_mode == "FLV_16:9")
+  {
+    window.open("http://pastor.goodtv.co.kr/mp4_16_9.asp?bitrate="+bitrate+"&chr_code="+chr_code+"&srmn_code="+srmn_code,"_SERMON_VOD","location=no,directories=no,resizable=no,status=no, toolbar=no,menubar=no,width=527,height=450,scrollbars=no");
+  }
+  else if (vod_player_mode == "FLV_4:3")
+  {
+    window.open("http://pastor.goodtv.co.kr/mp4_4_3.asp?bitrate="+bitrate+"&chr_code="+chr_code+"&srmn_code="+srmn_code,"_SERMON_VOD","location=no,directories=no,resizable=no,status=no, toolbar=no,menubar=no,width=405,height=450,scrollbars=no");
+
+  }
+  else
+  {
+    window.open("http://pastor.goodtv.co.kr/wmv_4_3.asp?bitrate="+bitrate+"&chr_code="+chr_code+"&srmn_code="+srmn_code,"_SERMON_VOD","location=no,directories=no,resizable=no,status=no, toolbar=no,menubar=no,width=405,height=494,scrollbars=no");
+
+  }
+}
+
+//-->
+</script>
+
+<link href="../css/css01.css" rel="stylesheet" type="text/css">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!--레이어팝업-->
+
+<script language="JavaScript">
+
+function setcookie( name, value, expirehours ) {
+var todayDate = new Date();
+todayDate.setHours( todayDate.getHours() + expirehours );
+document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+}
+
+function closeWin() {
+if ( document.notice_form.chkbox.checked ){
+setcookie( "maindiv", "done" , 24 );
+}
+
+document.all['divpop'].style.display = "none";
+
+}
+
+</script>
+
+ <!--레이어팝업 끝-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
+
+<title>온라인성경</title>
+</head>
+
+
+<body leftmargin="0" topmargin="0" onLoad="start_Form()";>
+<!--레이어POPUP 시작-->
+
+<!--<div id="divpop" style="width:341px; height:271px; position:absolute; left:100px; top:150px; z-index:1000; visibility:hidden;">
+<table width=341 height=261 cellpadding="0" cellspacing="0">
+<form name="notice_form">
+<tr>
+    <td align=center bgcolor=white>
+<img src="popup_test.jpg" height="262" border='0'>    </td>
+</tr>
+<tr>
+
+    <td align="right" bgcolor=#021321 height="10px">
+        <input type="checkbox" name="chkbox" value=""><font color=#FFFFFF size="2">오늘 하루 이 창을 열지 않음
+        </font><a href="javascript:closeWin();"><B><font color=#FFFFFF>[닫기]</font></B></a>
+    </td>
+</tr>
+        </form>
+</table>
+
+</div>
+
+<script language="Javascript">
+cookiedata = document.cookie;
+if ( cookiedata.indexOf("maindiv=done") < 0 ){
+    document.all['divpop'].style.visibility = "visible";
+    }
+    else {
+        document.all['divpop'].style.visibility = "hidden";
+}
+</script>
+ -->
+<!-- 레이어POPUP 끝-->
+
+
+<!--전체테이블 --><table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="41"><!-- coded by_200701_정일영 -->
+
+<div id="beta" style="position:absolute;left:576px;top:10px;width:29px;height:13px;z-index:1;"><img src="../images/write/icon_beta2.gif" border="0"></div>
+<div id="hot" style="position:absolute; left:781px; top:10px; width:29px; height:13px; z-index:1;"><img src="../images/write/icon_hot.gif" border="0"></div>
+<!--// beta btn -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="740" background="../images/topbg.gif">
+		<!--메뉴테이블 -->
+		<table width="800" border="0" cellpadding="0" cellspacing="0">
+            <td width="200"><img src="../images/logo_bible.gif" width="198" height="41" border="0" usemap="#Map" /></td>
+            <td width="100" align="center" valign="bottom"><a href="../main/index.asp?MenuCd=1"><img src="../images/menuhome.gif"  /></a></td>
+            <td width="100" align="center" valign="bottom"><a href="../read/read.asp?MenuCd=2"><img src="../images/menu01_on.gif" border="0" /></a></td>
+            <td width="100" align="center" valign="bottom"><a href="../search/word_search.asp?MenuCd=3"><img src="../images/menu02.gif"  /></a></td>
+			<td width="100" align="center" valign="bottom"><a href="http://bible.c3tv.com/bible/write/index.asp"><img src="../images/menu04.gif" border="0"/></a></td><!-- 성경타자 버튼 -->
+			<td width="100" align="center" valign="bottom"><a href="../dic/dic_list.asp?MenuCd=4"><img src="../images/menu03.gif"  /></a></td>
+			<td width="100" align="center" valign="bottom"><a href="/hymn/hymn_open_new.asp?MenuCd=1"><img src="../images/btn_gohymn.gif" border="0"/></a></td> <!-- 온라인 찬송 버튼 -->
+
+			</tr>
+        </table>
+		<!--//메뉴테이블 -->
+		</td>
+        <td align="right" background="../images/topbg.gif" style="padding-right:10">
+
+		<!--폰트옵션,인쇄,원어폰트설치 -->
+	  <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+
+              <td>
+			  <!--폰트사이즈 -->
+			  <table border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="padding: 0 5 0 5"><img src="../images/top_fontsize.gif" width="17" height="13" /></td>
+                    <td>
+
+					<select id="ChFont" onChange="ChangeFont(ChFont.value);">
+						<option value="10" >10</option>
+						<option value="11" >11</option>
+						<option value="12" >12</option>
+                        <option value="13" selected>13</option>
+						<option value="14" >14</option>
+						<option value="15" >15</option>
+						<option value="16" >16</option>
+						<option value="17" >17</option>
+						<option value="18" >18</option>
+						<option value="19" >19</option>
+						<option value="20" >20</option>
+						<option value="21" >21</option>
+						<option value="22" >22</option>
+						<option value="23" >23</option>
+						<option value="24" >24</option>
+
+                    </select>
+<!--
+					<span class='p13'> 테스트 </span>
+-->
+					</td>
+                  </tr>
+              </table>
+			  <!--//폰트사이즈 -->
+			  </td>
+              <td>
+			  <!--폰트칼라 -->
+			  <table border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td style="padding: 0 5 0 10"><img src="../images/top_fontcolor.gif" width="14" height="12" /></td>
+                    <td>
+					<select id="ChColor" onChange="ChangeColor(ChColor.value);">
+                        <option value="#000000" selected>검정</option>
+                        <option value="#800000">적갈색</option>
+						<option value="#008000">녹색</option>
+						<option value="#808000">올리브</option>
+						<option value="#00007F">짙은파랑</option>
+						<option value="#800080">자주</option>
+						<option value="#008080">청록</option>
+						<option value="#808080">회색</option>
+
+                    </select>
+					</td>
+                  </tr>
+              </table>
+			  <!--//폰트칼라 -->
+			  </td>
+
+       <td>
+			  <!--인쇄 및 폰트설치 -->
+			  <table border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+
+                    <td style="padding: 0 10 0 10"><img src="../images/print.gif" alt="인쇄" width="21" height="20"  onclick="RPrint()" style='cursor:hand'/></td>
+
+
+                    <td"><a href='../Inc/download.asp'><img src="../images/font_down_1.gif" width="73" height="23" /></a></td>
+
+                  </tr>
+              </table>
+			  <!--//인쇄 및 폰트설치 -->
+			  </td>
+
+            </tr>
+        </table>
+		<!--//폰트옵션,인쇄,원어폰트설치 -->
+		</td>
+      </tr>
+</table>
+	<SCRIPT LANGUAGE="JavaScript">
+	<!--
+	//폰트변경
+	function ChangeFont(CSize)
+	{
+		var StyleCode
+		StyleCode='1'
+
+		if(StyleCode=="1") //성경읽기 클래스 : p13
+		{
+			document.styleSheets[0].rules[10].style.fontSize=CSize
+			if(CSize>13)
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='-1'
+			}
+			else
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='0'
+			}
+		}
+
+		if(StyleCode=="2") //단어검색 클래스 : p14, p13
+		{
+			document.styleSheets[0].rules[15].style.fontSize=CSize
+			document.styleSheets[0].rules[10].style.fontSize=CSize
+
+			if(CSize>13)
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='-1'
+			}
+			else
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='0'
+			}
+		}
+
+		if(StyleCode=="3") //구절검색 클래스 : p13
+		{
+			document.styleSheets[0].rules[10].style.fontSize=CSize
+
+			if(CSize>13)
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='-1'
+			}
+			else
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='0'
+			}
+		}
+
+		if(StyleCode=="4") //소제목검색1,2,3 클래스 : p13
+		{
+			document.styleSheets[0].rules[10].style.fontSize=CSize
+
+			if(CSize>13)
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='-1'
+			}
+			else
+			{
+				document.styleSheets[0].rules[10].style.letterSpacing='0'
+			}
+		}
+
+
+	}
+
+	//색상변경
+	function ChangeColor(CColor)
+	{
+
+		var StyleCode
+		StyleCode='1'
+
+		if(StyleCode=="1") //성경읽기 성경읽기 클래스 : p13
+		{
+			document.styleSheets[0].rules[10].style.color=CColor
+		}
+
+		if(StyleCode=="2") //단어검색 클래스 : p14, p13
+		{
+			document.styleSheets[0].rules[15].style.color=CColor
+			document.styleSheets[0].rules[10].style.color=CColor
+		}
+
+		if(StyleCode=="3") //구절검색 클래스 : p13
+		{
+			document.styleSheets[0].rules[10].style.color=CColor
+		}
+
+		if(StyleCode=="4") //소제목검색1,2,3 클래스 : p13
+		{
+			document.styleSheets[0].rules[10].style.color=CColor
+		}
+
+	}
+	//-->
+	</SCRIPT><map name="Map" id="Map">
+<area shape="rect" coords="1,4,89,41" href="http://www.c3tv.com" target="_blank" />
+</map></td>
+  </tr>
+  <tr>
+    <td valign="top"><!--버전선택,본문선택 전체테이블 --><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<form name="SearchForm" id="SearchForm">
+<input type="hidden" name="ddd" id="ddd" value="ddd">
+      <tr>
+        <td height="62" bgcolor="#ABCCCC"  style="padding:8 13 2 13"><!--버전선택전체 --><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="80"><img src="../images/version.gif" width="67" height="19" /></td>
+            <td height="23"><!--한국어성경선택 -->
+              <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="80"><img src="../images/vkorean.gif" width="67" height="19" /></td>
+                <td><!--선택사항 --><table border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+
+
+                    <td>
+					<!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td align="right">
+							<input  class="radio" id="KindBCdChk" type="checkbox" value="2"  onclick='KindBCdChecked(0)' />
+							</td>
+                            <td class="small">
+							개역개정
+							</td>
+                          </tr>
+                        </table>
+                      <!--//체크1 -->
+					 </td>
+
+                    <td>
+					<!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td align="right">
+							<input  class="radio" id="KindBCdChk" type="checkbox" value="1"  onclick='KindBCdChecked(1)' />
+							</td>
+                            <td class="small">
+							개역한글
+							</td>
+                          </tr>
+                        </table>
+                      <!--//체크1 -->
+					 </td>
+
+                    <td>
+					<!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td align="right">
+							<input  class="radio" id="KindBCdChk" type="checkbox" value="3"  onclick='KindBCdChecked(2)' />
+							</td>
+                            <td class="small">
+							공동번역
+							</td>
+                          </tr>
+                        </table>
+                      <!--//체크1 -->
+					 </td>
+
+                    <td>
+					<!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td align="right">
+							<input  class="radio" id="KindBCdChk" type="checkbox" value="4"  onclick='KindBCdChecked(3)' />
+							</td>
+                            <td class="small">
+							표준새번역
+							</td>
+                          </tr>
+                        </table>
+                      <!--//체크1 -->
+					 </td>
+
+                    <td>
+					<!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td align="right">
+							<input  class="radio" id="KindBCdChk" type="checkbox" value="16"  onclick='KindBCdChecked(4)' />
+							</td>
+                            <td class="small">
+							우리말성경
+							</td>
+                          </tr>
+                        </table>
+                      <!--//체크1 -->
+					 </td>
+
+                  </tr>
+                </table><!--//선택사항 --></td>
+              </tr>
+            </table><!--//한국어선택 --></td>
+            </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td height="23"><!--외국어선택 -->
+              <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="80"><img src="../images/venglish.gif" width="67" height="19" /></td>
+                <td><!--선택사항 -->
+				<table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="6" onclick='KindBCdChecked(5)' />
+								</td>
+                                <td class="small">
+								NIV
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="7" onclick='KindBCdChecked(6)' />
+								</td>
+                                <td class="small">
+								KJV
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="8" onclick='KindBCdChecked(7)' />
+								</td>
+                                <td class="small">
+								NASB
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="10" onclick='KindBCdChecked(8)' />
+								</td>
+                                <td class="small">
+								(日)구어역
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="11" onclick='KindBCdChecked(9)' />
+								</td>
+                                <td class="small">
+								(日)신공동역
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="12" onclick='KindBCdChecked(10)' />
+								</td>
+                                <td class="small">
+								히브리어
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="13" onclick='KindBCdChecked(11)' />
+								</td>
+                                <td class="small">
+								헬라어
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="14" onclick='KindBCdChecked(12)' />
+								</td>
+                                <td class="small">
+								(中)번체
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                      <td><!--체크1 -->
+                        <table border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td align="right">
+								<input  class="radio" id="KindBCdChk" type="checkbox" value="15" onclick='KindBCdChecked(13)' />
+								</td>
+                                <td class="small">
+								(中)간체
+								</td>
+                            </tr>
+                            </table>
+                        <!--//체크1 -->
+						</td>
+
+                    </tr>
+                </table><!--//선택사항 --></td>
+              </tr>
+            </table><!--//외국어선택 --></td>
+            </tr>
+        </table><!--//버전선택 전체 --></td>
+      </tr>
+	  <tr>
+        <td height="31" bgcolor="EFEFEF"  style="padding:5 13 5 13">
+		<!--본문선택 전체 -->
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!--
+<form name=SearchForm>
+-->
+          <tr>
+            <td width="80"><img src="../images/vtext.gif" width="67" height="19" /></td>
+            <td><!--선택 및 버튼 --><table border="0" cellpadding="2" cellspacing="0">
+              <tr>
+                <td style="padding-right:2"><!--체크1 -->
+                    <table border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="right">
+						<input  class="radio" name="CtgACd" type="radio" value="1"   onclick="CtgBCdSBoxLoad(1)" checked/>						</td>
+                        <td class="small">구약</td>
+                      </tr>
+                    </table>
+                 <!--//체크1 --></td>
+                <td style="padding-right:15"><!--체크2 -->
+                    <table border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="right">
+						<input  class="radio" name="CtgACd" type="radio" value="2"  onclick="CtgBCdSBoxLoad(2)" />						</td>
+                        <td class="small">신약</td>
+                      </tr>
+                    </table>
+                  <!--//체크2 --></td>
+                <td ><!--체크3 -->
+				          <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td align="right">
+					              <span id=CtgBCdDiv><select name='CtgBCd' id='CtgBCd'  onChange=JangSBoxLoad(SearchForm.CtgBCd.value)  class='tbox'> <option value='1' selected>창세기</option>  <option value='2'>출애굽기</option>  <option value='3'>레위기</option>  <option value='4'>민수기</option>  <option value='5'>신명기</option>  <option value='6'>여호수아</option>  <option value='7'>사사기</option>  <option value='8'>룻기</option>  <option value='9'>사무엘상</option>  <option value='10'>사무엘하</option>  <option value='11'>열왕기상</option>  <option value='12'>열왕기하</option>  <option value='13'>역대상</option>  <option value='14'>역대하</option>  <option value='15'>에스라</option>  <option value='16'>느헤미야</option>  <option value='17'>에스더</option>  <option value='18'>욥기</option>  <option value='19'>시편</option>  <option value='20'>잠언</option>  <option value='21'>전도서</option>  <option value='22'>아가</option>  <option value='23'>이사야</option>  <option value='24'>예레미야</option>  <option value='25'>예레미야애가</option>  <option value='26'>에스겔</option>  <option value='27'>다니엘</option>  <option value='28'>호세아</option>  <option value='29'>요엘</option>  <option value='30'>아모스</option>  <option value='31'>오바댜</option>  <option value='32'>요나</option>  <option value='33'>미가</option>  <option value='34'>나훔</option>  <option value='35'>하박국</option>  <option value='36'>스바냐</option>  <option value='37'>학개</option>  <option value='38'>스가랴</option>  <option value='39'>말라기</option> </select></span>
+					            </td>
+                      <td class="small">
+						            <span id=JangDiv><select name='Jang' id='Jang'  class='tbox'> <option value='1'>1장</option>  <option value='2'>2장</option>  <option value='3'>3장</option>  <option value='4'>4장</option>  <option value='5'>5장</option>  <option value='6'>6장</option>  <option value='7'>7장</option>  <option value='8'>8장</option>  <option value='9'>9장</option>  <option value='10'>10장</option>  <option value='11'>11장</option>  <option value='12'>12장</option>  <option value='13'>13장</option>  <option value='14'>14장</option>  <option value='15'>15장</option>  <option value='16'>16장</option>  <option value='17'>17장</option>  <option value='18'>18장</option>  <option value='19'>19장</option>  <option value='20'>20장</option>  <option value='21'>21장</option>  <option value='22'>22장</option>  <option value='23'>23장</option>  <option value='24'>24장</option>  <option value='25'>25장</option>  <option value='26'>26장</option>  <option value='27'>27장</option>  <option value='28'>28장</option>  <option value='29'>29장</option>  <option value='30'>30장</option>  <option value='31'>31장</option>  <option value='32'>32장</option>  <option value='33'>33장</option>  <option value='34'>34장</option>  <option value='35'>35장</option>  <option value='36'>36장</option>  <option value='37'>37장</option>  <option value='38'>38장</option>  <option value='39'>39장</option>  <option value='40'>40장</option>  <option value='41'>41장</option>  <option value='42'>42장</option>  <option value='43'>43장</option>  <option value='44'>44장</option>  <option value='45'>45장</option>  <option value='46'>46장</option>  <option value='47'>47장</option>  <option value='48'>48장</option>  <option value='49'>49장</option>  <option value='50'>50장</option> </select></span>
+					              <input type=hidden name=KindBCdArr value="">
+					            </td>
+                    </tr>
+                </table>
+				<!--//체크3 -->				</td>
+                <td ><img src="../images/btn_read.gif" width="45" height="22"  onclick="ContLoad()" style='cursor:hand'/></td>
+				<td>
+					<table border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td width="2"></td>
+						<td align="left">
+						
+							<!-- <a href="javascript:jsGoto_Login_Page_Bible();"> -->
+							<a href="javascript:void(0)" onClick="jsGoto_Login_Page_Bible_Ifr('read_page');"><img src="../images/bookmark/btn_bookmark_list.gif" alt="책갈피 목록 입니다. 로그인 후 이용하세요." border="0" align="absmiddle"></a>
+						
+						</td>
+						<td><!-- &nbsp; <a href="javascript:jsGoto_Logoff_Page()">로그아웃</a> --></td>
+					</tr>
+					</table>
+				</td>
+
+				<td class="gray4"  style="padding:8 0 0 5"> (※ 버전을 <font color="#FF3300">3개까지</font> 선택할 수 있습니다.)</td>
+              </tr>
+            </table>
+            <!--//선택 및 버튼 --></td>
+          </tr>
+</form>
+        </table>
+		<!--//본문선택 전체 -->
+		</td>
+      </tr>
+
+    </table>
+<!--//버전선택,본문선택 전체테이블 -->
+<span id=Cont>
+
+</span>
+
+	  </td>
+  </tr>
+  <tr>
+    <td height="70"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="19" ></td>
+  </tr>
+  <tr>
+    <td height="1" bgcolor="EFEBEF" ></td>
+  </tr>
+  <tr>
+    <td height="40" align="center" ><img src="../images/copyright.gif" width="330" height="15" /></td>
+  </tr>
+</table>
+
+<!---------- 구글 통계 시작 --------------------------->
+<!-- 2011.05 -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-22340454-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!---------- 구글 통계 끝 ----------------------------->
+
+<!---------- 전체 구글 통계 시작 ---------------------->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-5062471-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!---------- 전체 구글 통계 끝 ------------------------>
+
+
+ </td>
+  </tr>
+</table><!--//전체테이블 -->
+
+<!--단어풀이 보기 시작-->
+<div id="DicLy" style="position:absolute; left:264px; top:212px;  z-index:1; display:none;" class="DicLyDrag">
+<table width="400" border="0" cellpadding="1" cellspacing="0" bgcolor="F2E8C7">
+  <tr>
+    <td >
+	<table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center" valign="top" bgcolor="FFFBEE" class="p13 gul ln16" style="padding:8 10 0 10">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="9"><img src="../images/bul_dot.gif" width="5" height="5" /></td>
+                <td width="348" height="20" class="b">성경사전</td>
+                <td width="20" align="right" class="b"><img src="../images/btn_closex.gif" width="13" height="13" onClick="DicLy.style.display='none'" style='cursor:hand'></td>
+              </tr>
+              <tr>
+                <td height="1" colspan="3" bgcolor="F2E8C7"></td>
+              </tr>
+            </table>
+		</td>
+      </tr>
+
+    </table>
+
+	<!--//내용전체테이블 -->
+	</td>
+  </tr>
+</table>
+
+<table align="center" valign=top width=400 height=50 border="0" cellpadding="0" cellspacing="0" bgcolor="">
+  <tr align="center">
+     <td align="center">
+		<iframe id="DicIf" frameborder="0" leftmargin="0" marginheight="0" marginwidth="0" scrolling="yes" topmargin="0" width="400"></iframe>
+	 </td>
+  </tr>
+</table>
+</div>
+<!--단어풀이 보기 끝-->
+
+<!-- 관련설교 시작-->
+<div id=Sermon  style="position:absolute; left:85px; top:98px; width:307px; z-index:1; display:none;" class="SermonDrag">
+관련설교
+</div>
+<!-- 관련설교 끝 -->
+
+<!-- 북마크 목록 시작 -->
+<div id="BookmarkListLy" style="position:absolute; left:264px; top:212px;  z-index:1; display:none;" class="BookmarkListLyDrag">
+<table width="204" border="0" cellpadding="0" cellspacing="0" bgcolor="#ffe696">
+  <tr>
+    <td height="2">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+        <table width="200" border="0" cellpadding="0" cellspacing="0" bgcolor="#fffbee">
+          <tr>
+            <td>
+             <table width="200" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="12" style="padding:3 3 3 3; background-color:#ffe696"><img src="../images/bookmark/bul_dot.gif" width="5" height="5" /></td>
+                <td width="134" class="top_title" style="padding:3 3 3 3; background-color:#ffe696">책갈피목록</td>
+                <td width="54" align="right" style="padding:3 3 3 3; background-color:#ffe696"><img src="../images/bookmark/x.gif" width="13" height="13" onClick="BookmarkListLy.style.display='none'" style='cursor:hand'/></td>
+              </tr>
+            </table>
+
+            </td>
+          </tr>
+          <tr>
+            <td align="center" height="4"></td>
+          </tr>
+          <tr>
+            <td align="center">
+				 <span id="BookmarkListIf" ></span>
+				 <!--
+				 <iframe id="BookmarkListIf" frameborder="0" leftmargin="0" marginheight="0" marginwidth="0" scrolling="no" topmargin="0" width="300"></iframe>
+				 -->
+            </td>
+          </tr>
+          <tr>
+            <td align="center"></td>
+          </tr>
+        </table>
+    </td>
+  </tr>
+  <tr>
+    <td height="2"></td>
+  </tr>
+</table>
+</div>
+<!-- 북마크 목록 끝 -->
+
+<!--로그인상자 시작 -->
+<div id="login_box_Ly" style="position:absolute; left:264px; top:212px;  z-index:10; display:none;" class="login_box_Ly_Drag">
+<table width="255" height="200" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="2">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+ 		<iframe id="login_box_ifr" name="login_box_ifr"  frameborder="0" leftmargin="0" marginheight="0" marginwidth="0" scrolling="no" topmargin="0" width="260" height="200"></iframe>
+
+    </td>
+  </tr>
+  <tr>
+    <td height="2"></td>
+  </tr>
+</table>
+</div>
+<!-- 로그인상자 끝 -->
+
+
+</body>
+</html>
+<!-- 인쇄 iframe -->
+<iframe name="TPrint" width="0" height="0" ></iframe>
